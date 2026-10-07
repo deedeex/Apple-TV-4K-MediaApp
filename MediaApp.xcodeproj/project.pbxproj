@@ -6,6 +6,25 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		CEDE13C4305066DD00875B12 /* AMSMB2 in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 84FC7F9F266D717E0351A75A /* AMSMB2 */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		F5954D620DB7FFCA5B87619A /* AMSMB2 in Frameworks */ = {isa = PBXBuildFile; productRef = 84FC7F9F266D717E0351A75A /* AMSMB2 */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		CEDE13C5305066DD00875B12 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				CEDE13C4305066DD00875B12 /* AMSMB2 in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		CEE521DA304F506400AD0EDA /* MediaApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MediaApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +42,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F5954D620DB7FFCA5B87619A /* AMSMB2 in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -55,6 +75,7 @@
 				CEE521D6304F506400AD0EDA /* Sources */,
 				CEE521D7304F506400AD0EDA /* Frameworks */,
 				CEE521D8304F506400AD0EDA /* Resources */,
+				CEDE13C5305066DD00875B12 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -65,6 +86,7 @@
 			);
 			name = MediaApp;
 			packageProductDependencies = (
+				84FC7F9F266D717E0351A75A /* AMSMB2 */,
 			);
 			productName = MediaApp;
 			productReference = CEE521DA304F506400AD0EDA /* MediaApp.app */;
@@ -94,6 +116,9 @@
 			);
 			mainGroup = CEE521D1304F506400AD0EDA;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				6DE220505A88552B2B8D12AF /* XCRemoteSwiftPackageReference "AMSMB2" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = CEE521DB304F506400AD0EDA /* Products */;
 			projectDirPath = "";
@@ -256,6 +281,8 @@
 				DEVELOPMENT_TEAM = 9APV586M2S;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Pingu Player";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Aplikacja potrzebuje dostępu do sieci lokalnej, aby połączyć się z serwerem NAS po SMB.";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -285,6 +312,8 @@
 				DEVELOPMENT_TEAM = 9APV586M2S;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Pingu Player";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Aplikacja potrzebuje dostępu do sieci lokalnej, aby połączyć się z serwerem NAS po SMB.";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -326,6 +355,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		6DE220505A88552B2B8D12AF /* XCRemoteSwiftPackageReference "AMSMB2" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/amosavian/AMSMB2";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		84FC7F9F266D717E0351A75A /* AMSMB2 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6DE220505A88552B2B8D12AF /* XCRemoteSwiftPackageReference "AMSMB2" */;
+			productName = AMSMB2;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = CEE521D2304F506400AD0EDA /* Project object */;
 }
