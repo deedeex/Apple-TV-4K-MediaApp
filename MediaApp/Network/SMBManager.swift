@@ -22,12 +22,12 @@ enum SMBError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .invalidServerURL: return "Nieprawidłowy adres serwera SMB."
-        case .connectionFailed: return "Nie udało się połączyć z serwerem SMB. Sprawdź adres, użytkownika i hasło."
-        case .invalidRemotePath: return "Nieprawidłowa ścieżka pliku na serwerze."
-        case .missingCredentials: return "Brak zapisanej konfiguracji serwera NAS."
-        case .thumbnailDecodingFailed: return "Nie udało się zdekodować miniatury."
-        case .timedOut: return "Serwer NAS nie odpowiada (przekroczono limit czasu). Sprawdź połączenie sieciowe i spróbuj ponownie."
+        case .invalidServerURL: return String(localized: "Nieprawidłowy adres serwera SMB.")
+        case .connectionFailed: return String(localized: "Nie udało się połączyć z serwerem SMB. Sprawdź adres, użytkownika i hasło.")
+        case .invalidRemotePath: return String(localized: "Nieprawidłowa ścieżka pliku na serwerze.")
+        case .missingCredentials: return String(localized: "Brak zapisanej konfiguracji serwera NAS.")
+        case .thumbnailDecodingFailed: return String(localized: "Nie udało się zdekodować miniatury.")
+        case .timedOut: return String(localized: "Serwer NAS nie odpowiada (przekroczono limit czasu). Sprawdź połączenie sieciowe i spróbuj ponownie.")
         }
     }
 }

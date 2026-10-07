@@ -108,9 +108,10 @@
 				};
 			};
 			buildConfigurationList = CEE521D5304F506400AD0EDA /* Build configuration list for PBXProject "MediaApp" */;
-			developmentRegion = en;
+			developmentRegion = pl;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				pl,
 				en,
 				Base,
 			);

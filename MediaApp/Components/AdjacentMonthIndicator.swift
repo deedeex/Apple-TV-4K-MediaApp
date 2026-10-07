@@ -37,8 +37,8 @@ struct AdjacentMonthIndicator: View {
 
         var title: String {
             switch self {
-            case .previous: return "Poprzedni miesiąc"
-            case .next: return "Następny miesiąc"
+            case .previous: return String(localized: "Poprzedni miesiąc")
+            case .next: return String(localized: "Następny miesiąc")
             }
         }
 

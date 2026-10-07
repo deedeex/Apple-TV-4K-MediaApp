@@ -136,8 +136,8 @@ struct SetupView: View {
 
     @ViewBuilder
     private func field(
-        title: String,
-        placeholder: String,
+        title: LocalizedStringKey,
+        placeholder: LocalizedStringKey,
         text: Binding<String>,
         field: Field,
         contentType: UITextContentType?,
@@ -162,7 +162,7 @@ struct SetupView: View {
     }
 
     @ViewBuilder
-    private func secureField(title: String, text: Binding<String>, field: Field) -> some View {
+    private func secureField(title: LocalizedStringKey, text: Binding<String>, field: Field) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(title)
                 .font(.system(size: 24, weight: .semibold))

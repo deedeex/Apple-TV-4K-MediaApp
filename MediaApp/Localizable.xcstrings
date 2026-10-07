@@ -1,0 +1,962 @@
+{
+  "sourceLanguage": "pl",
+  "strings": {
+    "%@ · %@ z %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@ of %3$@"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$@ · %2$@ z %3$@"
+          }
+        }
+      }
+    },
+    "%lld": {
+      "shouldTranslate": false
+    },
+    "%lld obrazów": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld image"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld images"
+                }
+              }
+            }
+          }
+        },
+        "pl": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld obrazy"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld obrazów"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld obraz"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld obrazu"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld plików": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld file"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld files"
+                }
+              }
+            }
+          }
+        },
+        "pl": {
+          "variations": {
+            "plural": {
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld pliki"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld plików"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld plik"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld pliku"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Aby zmienić język, uruchom aplikację ponownie: naciśnij dwa razy przycisk TV na pilocie, przesuń Pingu Player w górę, a potem otwórz ją jeszcze raz.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To change the language, restart the app: press the TV button twice on the remote, swipe Pingu Player up, then open it again."
+          }
+        }
+      }
+    },
+    "Adres hosta": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Host address"
+          }
+        }
+      }
+    },
+    "Anuluj": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
+          }
+        }
+      }
+    },
+    "Bordowy": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Burgundy"
+          }
+        }
+      }
+    },
+    "Brak samodzielnych plików wideo na NAS (razem z podfolderami).": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No standalone video files on the NAS (including subfolders)."
+          }
+        }
+      }
+    },
+    "Brak zapisanej konfiguracji serwera NAS.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No saved NAS server configuration."
+          }
+        }
+      }
+    },
+    "Brak zdjęć ani wideo w tym katalogu na NAS (razem z podfolderami).": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No photos or videos in this NAS folder (including subfolders)."
+          }
+        }
+      }
+    },
+    "Brak zdjęć w tym katalogu na NAS (razem z podfolderami).": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No photos in this NAS folder (including subfolders)."
+          }
+        }
+      }
+    },
+    "Brązowy": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brown"
+          }
+        }
+      }
+    },
+    "Ciemne indygo": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dark indigo"
+          }
+        }
+      }
+    },
+    "Ciemnoszary": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dark gray"
+          }
+        }
+      }
+    },
+    "Czarny": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Black"
+          }
+        }
+      }
+    },
+    "Czerwony": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Red"
+          }
+        }
+      }
+    },
+    "Fioletowy": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Purple"
+          }
+        }
+      }
+    },
+    "Granatowy": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Navy"
+          }
+        }
+      }
+    },
+    "Hasło": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Password"
+          }
+        }
+      }
+    },
+    "Host": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Host"
+          }
+        }
+      }
+    },
+    "Indygo (domyślne)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indigo (default)"
+          }
+        }
+      }
+    },
+    "Jasnoszary": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Light gray"
+          }
+        }
+      }
+    },
+    "Język": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Language"
+          }
+        }
+      }
+    },
+    "Język systemu Apple TV": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple TV system language"
+          }
+        }
+      }
+    },
+    "Liczenie…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calculating…"
+          }
+        }
+      }
+    },
+    "Live": {
+      "shouldTranslate": false
+    },
+    "Miniatury zdjęć i wideo zapisywane na Apple TV, żeby siatka ładowała się szybko bez ponownego pobierania z NAS.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photo and video thumbnails saved on the Apple TV so the grid loads quickly without downloading them from the NAS again."
+          }
+        }
+      }
+    },
+    "Morski": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teal"
+          }
+        }
+      }
+    },
+    "Na dysku": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On disk"
+          }
+        }
+      }
+    },
+    "Następne": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next"
+          }
+        }
+      }
+    },
+    "Następny miesiąc": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next month"
+          }
+        }
+      }
+    },
+    "Nazwa udziału": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share name"
+          }
+        }
+      }
+    },
+    "Nie udało się odtworzyć wideo z serwera NAS.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not play the video from the NAS."
+          }
+        }
+      }
+    },
+    "Nie udało się połączyć z serwerem SMB. Sprawdź adres, użytkownika i hasło.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not connect to the SMB server. Check the address, username and password."
+          }
+        }
+      }
+    },
+    "Nie udało się zdekodować miniatury.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not decode the thumbnail."
+          }
+        }
+      }
+    },
+    "Niebieski": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Blue"
+          }
+        }
+      }
+    },
+    "Nieprawidłowa ścieżka pliku na serwerze.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invalid file path on the server."
+          }
+        }
+      }
+    },
+    "Nieprawidłowy adres serwera SMB.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invalid SMB server address."
+          }
+        }
+      }
+    },
+    "Nieznana data": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unknown date"
+          }
+        }
+      }
+    },
+    "Odtwórz ponownie": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Play again"
+          }
+        }
+      }
+    },
+    "Odśwież": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Refresh"
+          }
+        }
+      }
+    },
+    "Odśwież bibliotekę": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Refresh library"
+          }
+        }
+      }
+    },
+    "Odświeżyć bibliotekę?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Refresh library?"
+          }
+        }
+      }
+    },
+    "Oliwkowy": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Olive"
+          }
+        }
+      }
+    },
+    "Pamięć podręczna": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cache"
+          }
+        }
+      }
+    },
+    "Podaj dane logowania do udziału SMB na Twoim Synology. Folder główny wybierzesz w następnym kroku.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter the login details for the SMB share on your Synology. You will choose the main folder in the next step."
+          }
+        }
+      }
+    },
+    "Pomarańczowy": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Orange"
+          }
+        }
+      }
+    },
+    "Poprzedni miesiąc": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Previous month"
+          }
+        }
+      }
+    },
+    "Poprzednie": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Previous"
+          }
+        }
+      }
+    },
+    "Połącz": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connect"
+          }
+        }
+      }
+    },
+    "Połącz z serwerem NAS": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connect to NAS server"
+          }
+        }
+      }
+    },
+    "Różowy": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pink"
+          }
+        }
+      }
+    },
+    "Serwer": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server"
+          }
+        }
+      }
+    },
+    "Serwer NAS nie odpowiada (przekroczono limit czasu). Sprawdź połączenie sieciowe i spróbuj ponownie.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The NAS server is not responding (timed out). Check the network connection and try again."
+          }
+        }
+      }
+    },
+    "Skanowanie NAS w poszukiwaniu wideo…\nTo może chwilę potrwać przy dużej bibliotece.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scanning the NAS for videos…\nThis may take a while for a large library."
+          }
+        }
+      }
+    },
+    "Skanowanie NAS w poszukiwaniu zdjęć i wideo…\nTo może chwilę potrwać przy dużej bibliotece.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scanning the NAS for photos and videos…\nThis may take a while for a large library."
+          }
+        }
+      }
+    },
+    "Skanowanie NAS…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scanning NAS…"
+          }
+        }
+      }
+    },
+    "Skanuje folder na NAS i aktualizuje listę zdjęć i wideo: dodaje nowe pliki i usuwa te, których już nie ma. Nie usuwa miniatur ani niczego na NAS.\n\nDzieje się to też automatycznie: przy uruchomieniu aplikacji i po powrocie do niej po co najmniej 24 godzinach.\n\nKiedy warto: nowe zdjęcia są już na NAS, a chcesz je zobaczyć od razu.\n\nSkan trwa kilka sekund — w tym czasie można normalnie przeglądać.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scans the NAS folder and updates the list of photos and videos: adds new files and removes ones that no longer exist. It does not delete thumbnails or anything on the NAS.\n\nThis also happens automatically: when the app starts and when you return to it after at least 24 hours.\n\nWhen to use: new photos are already on the NAS and you want to see them right away.\n\nThe scan takes a few seconds — you can keep browsing in the meantime."
+          }
+        }
+      }
+    },
+    "Spróbuj ponownie": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try again"
+          }
+        }
+      }
+    },
+    "Szary": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gray"
+          }
+        }
+      }
+    },
+    "Ten folder jest pusty.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This folder is empty."
+          }
+        }
+      }
+    },
+    "Turkusowy": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turquoise"
+          }
+        }
+      }
+    },
+    "Tło": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Background"
+          }
+        }
+      }
+    },
+    "Udział": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share"
+          }
+        }
+      }
+    },
+    "Ustaw ten folder jako główny": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Set this folder as main"
+          }
+        }
+      }
+    },
+    "Ustawienia": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settings"
+          }
+        }
+      }
+    },
+    "Usuwa miniatury z pamięci i dysku Apple TV. Pliki na NAS zostają nietknięte.\n\nKiedy warto:\n• zdjęcie zmieniono na NAS, a widać starą wersję,\n• po zmianie serwera lub folderu,\n• brakuje miejsca na Apple TV,\n• miniatura wyświetla się nieprawidłowo.\n\nPotem miniatury będą ponownie pobierane z NAS, więc siatka przez jakiś czas będzie ładować się wolniej.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Removes thumbnails from the Apple TV memory and disk. Files on the NAS are not touched.\n\nWhen to use:\n• a photo was changed on the NAS but the old version is shown,\n• after changing the server or folder,\n• the Apple TV is running out of space,\n• a thumbnail is displayed incorrectly.\n\nAfterwards thumbnails will be downloaded from the NAS again, so the grid will load more slowly for a while."
+          }
+        }
+      }
+    },
+    "Użytkownik": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Username"
+          }
+        }
+      }
+    },
+    "W pamięci (RAM)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In memory (RAM)"
+          }
+        }
+      }
+    },
+    "Wczytywanie wideo…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loading video…"
+          }
+        }
+      }
+    },
+    "Wczytywanie zawartości…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loading contents…"
+          }
+        }
+      }
+    },
+    "Wideo": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Videos"
+          }
+        }
+      }
+    },
+    "Wstecz": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Back"
+          }
+        }
+      }
+    },
+    "Wszystko": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All"
+          }
+        }
+      }
+    },
+    "Wybierz folder główny": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose main folder"
+          }
+        }
+      }
+    },
+    "Wyczyścić pamięć podręczną?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear cache?"
+          }
+        }
+      }
+    },
+    "Wyczyść": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear"
+          }
+        }
+      }
+    },
+    "Wyczyść pamięć podręczną": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear cache"
+          }
+        }
+      }
+    },
+    "Zdjęcia": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photos"
+          }
+        }
+      }
+    },
+    "Zielony": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Green"
+          }
+        }
+      }
+    },
+    "Zmiana języka zacznie obowiązywać po ponownym uruchomieniu aplikacji.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The language change takes effect after restarting the app."
+          }
+        }
+      }
+    },
+    "Zmień ustawienia serwera": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Change server settings"
+          }
+        }
+      }
+    },
+    "np. 192.168.1.10 lub nas.local": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "e.g. 192.168.1.10 or nas.local"
+          }
+        }
+      }
+    },
+    "np. dawid": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "e.g. john"
+          }
+        }
+      }
+    },
+    "np. photo": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "e.g. photo"
+          }
+        }
+      }
+    },
+    "Ścieżka": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Path"
+          }
+        }
+      }
+    },
+    "Żółty": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yellow"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

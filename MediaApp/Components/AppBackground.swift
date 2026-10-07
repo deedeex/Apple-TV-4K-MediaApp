@@ -53,25 +53,25 @@ enum BackgroundTheme: String, CaseIterable, Identifiable {
 
     var name: String {
         switch self {
-        case .indigo: "Indygo (domyślne)"
-        case .darkIndigo: "Ciemne indygo"
-        case .red: "Czerwony"
-        case .burgundy: "Bordowy"
-        case .pink: "Różowy"
-        case .orange: "Pomarańczowy"
-        case .yellow: "Żółty"
-        case .brown: "Brązowy"
-        case .olive: "Oliwkowy"
-        case .green: "Zielony"
-        case .teal: "Morski"
-        case .turquoise: "Turkusowy"
-        case .blue: "Niebieski"
-        case .navy: "Granatowy"
-        case .purple: "Fioletowy"
-        case .darkGray: "Ciemnoszary"
-        case .gray: "Szary"
-        case .lightGray: "Jasnoszary"
-        case .black: "Czarny"
+        case .indigo: String(localized: "Indygo (domyślne)")
+        case .darkIndigo: String(localized: "Ciemne indygo")
+        case .red: String(localized: "Czerwony")
+        case .burgundy: String(localized: "Bordowy")
+        case .pink: String(localized: "Różowy")
+        case .orange: String(localized: "Pomarańczowy")
+        case .yellow: String(localized: "Żółty")
+        case .brown: String(localized: "Brązowy")
+        case .olive: String(localized: "Oliwkowy")
+        case .green: String(localized: "Zielony")
+        case .teal: String(localized: "Morski")
+        case .turquoise: String(localized: "Turkusowy")
+        case .blue: String(localized: "Niebieski")
+        case .navy: String(localized: "Granatowy")
+        case .purple: String(localized: "Fioletowy")
+        case .darkGray: String(localized: "Ciemnoszary")
+        case .gray: String(localized: "Szary")
+        case .lightGray: String(localized: "Jasnoszary")
+        case .black: String(localized: "Czarny")
         }
     }
 
@@ -81,13 +81,14 @@ enum BackgroundTheme: String, CaseIterable, Identifiable {
     /// tylko na tle pozostałych szarości — nadal ciemny, z tego samego
     /// powodu.
     var stops: [Gradient.Stop] {
+        // Ciemne indygo i bordowy — osobne, 4-punktowe gradienty (niżej).
+        if !smoothDarkStops.isEmpty { return smoothDarkStops }
+
         let (center, middle, edge): (UInt32, UInt32, UInt32) = switch self {
         case .indigo: (0x2B1967, 0x1A0F45, 0x0C0722)
-        // Ten sam odcień co indygo, ok. 40% ciemniejszy w każdym punkcie —
-        // gradient nadal widoczny, ale subtelniejszy.
-        case .darkIndigo: (0x1A0F40, 0x10092A, 0x060312)
+        case .darkIndigo: (0x1A0F40, 0x120A31, 0x0B0621)
+        case .burgundy: (0x3F0E1C, 0x2C0A15, 0x1C060D)
         case .red: (0x4A1620, 0x2E0D14, 0x140508)
-        case .burgundy: (0x3F0E1C, 0x280812, 0x110307)
         case .pink: (0x4F1A3A, 0x321024, 0x16070F)
         case .orange: (0x4F2A0E, 0x321A08, 0x160B03)
         case .yellow: (0x4A3F10, 0x2E270A, 0x141104)
@@ -109,6 +110,25 @@ enum BackgroundTheme: String, CaseIterable, Identifiable {
             .init(color: Color(hex: middle), location: 0.55),
             .init(color: Color(hex: edge), location: 1),
         ]
+    }
+
+    /// Bardzo ciemne motywy z łagodniejszym zejściem na zewnątrz. Przy
+    /// 3 punktach jak w pozostałych (np. ciemne indygo 0x10092A → 0x060312)
+    /// kanały koloru miały w zewnętrznej części gradientu tylko kilkanaście
+    /// poziomów jasności (z 256), więc każdy "schodek" rozciągał się na
+    /// szeroki pas ekranu — widoczny banding (wyraźna granica jasne/ciemne),
+    /// najbardziej w dolnych rogach, najdalej od środka gradientu. Tu brzeg
+    /// jest bliższy jasnością środkowi, a dodatkowy punkt na 80% wypłaszcza
+    /// spadek tam, gdzie był najbardziej stromy.
+    private var smoothDarkStops: [Gradient.Stop] {
+        let colors: [(UInt32, Double)] = switch self {
+        // Ten sam odcień co indygo, wyraźnie ciemniejszy — gradient nadal
+        // widoczny, ale subtelniejszy.
+        case .darkIndigo: [(0x1A0F40, 0), (0x120A31, 0.55), (0x0E0828, 0.8), (0x0B0621, 1)]
+        case .burgundy: [(0x3F0E1C, 0), (0x2C0A15, 0.55), (0x230811, 0.8), (0x1C060D, 1)]
+        default: []
+        }
+        return colors.map { .init(color: Color(hex: $0.0), location: $0.1) }
     }
 }
 

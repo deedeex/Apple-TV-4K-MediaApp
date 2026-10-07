@@ -70,7 +70,7 @@ final class SMBStreamingAssetLoader: NSObject, AVAssetResourceLoaderDelegate {
     /// pojawia się dopiero tutaj. Kończy się nil po anulowaniu zadania.
     static func failureMessage(of item: AVPlayerItem) async -> String? {
         for await status in item.publisher(for: \.status).values where status == .failed {
-            return item.error?.localizedDescription ?? "Nie udało się odtworzyć wideo z serwera NAS."
+            return item.error?.localizedDescription ?? String(localized: "Nie udało się odtworzyć wideo z serwera NAS.")
         }
         return nil
     }

@@ -23,6 +23,10 @@
 //  zapisywany w @AppStorage, więc przetrwa restart aplikacji. Zmiana działa
 //  od razu we wszystkich zakładkach.
 //
+//  Język — polski / angielski / język systemu Apple TV (AppLanguage niżej).
+//  Tłumaczenia w Localizable.xcstrings (String Catalog, język źródłowy:
+//  polski). Zmiana działa po ponownym uruchomieniu aplikacji.
+//
 
 import SwiftUI
 
@@ -30,14 +34,16 @@ private enum SettingsSection: String, CaseIterable, Identifiable {
     case server
     case cache
     case background
+    case language
 
     var id: String { rawValue }
 
     var title: String {
         switch self {
-        case .server: "Serwer"
-        case .cache: "Pamięć podręczna"
-        case .background: "Tło"
+        case .server: String(localized: "Serwer")
+        case .cache: String(localized: "Pamięć podręczna")
+        case .background: String(localized: "Tło")
+        case .language: String(localized: "Język")
         }
     }
 
@@ -46,6 +52,52 @@ private enum SettingsSection: String, CaseIterable, Identifiable {
         case .server: "server.rack"
         case .cache: "internaldrive"
         case .background: "paintpalette"
+        case .language: "globe"
+        }
+    }
+}
+
+/// Język interfejsu wybierany w Ustawieniach → Język. Działa przez
+/// standardowy mechanizm Apple: nadpisanie listy preferowanych języków
+/// aplikacji (klucz "AppleLanguages" w jej UserDefaults). System czyta ją
+/// tylko przy STARCIE procesu i na tej podstawie wybiera tłumaczenia z
+/// Localizable.xcstrings — dlatego zmiana działa dopiero po ponownym
+/// uruchomieniu aplikacji. `.system` usuwa nadpisanie, czyli wraca do
+/// języka ustawionego w Apple TV (gdy nie jest to polski ani angielski —
+/// do języka źródłowego, polskiego).
+enum AppLanguage: String, CaseIterable, Identifiable {
+    case system
+    case pl
+    case en
+
+    static let storageKey = "appLanguage"
+    private static let appleLanguagesKey = "AppleLanguages"
+
+    /// Wybór obowiązujący przy starcie tego procesu — do wykrycia, że
+    /// użytkownik zmienił język i trzeba zrestartować aplikację.
+    static let atLaunch = AppLanguage(
+        rawValue: UserDefaults.standard.string(forKey: storageKey) ?? ""
+    ) ?? .system
+
+    var id: String { rawValue }
+
+    /// Nazwy języków zawsze w ich WŁASNYM języku ("English", nie
+    /// "Angielski") — standard w wyborze języka, żeby dało się go znaleźć
+    /// niezależnie od bieżącego języka interfejsu.
+    var displayName: String {
+        switch self {
+        case .system: String(localized: "Język systemu Apple TV")
+        case .pl: "Polski"
+        case .en: "English"
+        }
+    }
+
+    func apply() {
+        switch self {
+        case .system:
+            UserDefaults.standard.removeObject(forKey: Self.appleLanguagesKey)
+        case .pl, .en:
+            UserDefaults.standard.set([rawValue], forKey: Self.appleLanguagesKey)
         }
     }
 }
@@ -67,6 +119,7 @@ struct SettingsView: View {
     @State private var isClearingCache = false
     @State private var isConfirmingClear = false
     @State private var isConfirmingRefresh = false
+    @AppStorage(AppLanguage.storageKey) private var appLanguage: AppLanguage = .system
 
     var body: some View {
         HStack(alignment: .top, spacing: 0) {
@@ -90,6 +143,7 @@ struct SettingsView: View {
                 case .server: serverSection
                 case .cache: cacheSection
                 case .background: backgroundSection
+                case .language: languageSection
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -285,6 +339,48 @@ struct SettingsView: View {
         .disabled(isClearingCache)
     }
 
+    // MARK: - Sekcja: Język
+
+    private var languageSection: some View {
+        VStack(alignment: .leading, spacing: 30) {
+            VStack(alignment: .leading, spacing: 20) {
+                ForEach(AppLanguage.allCases) { language in
+                    Button {
+                        appLanguage = language
+                        language.apply()
+                    } label: {
+                        HStack {
+                            Text(verbatim: language.displayName)
+                            Spacer()
+                            if language == appLanguage {
+                                Image(systemName: "checkmark")
+                            }
+                        }
+                        .font(.system(size: 30, weight: .semibold))
+                        .frame(width: 600)
+                        .padding(.vertical, 20)
+                        .padding(.horizontal, 30)
+                    }
+                    .buttonStyle(.card)
+                }
+            }
+
+            if appLanguage != AppLanguage.atLaunch {
+                Label {
+                    Text("Aby zmienić język, uruchom aplikację ponownie: naciśnij dwa razy przycisk TV na pilocie, przesuń Pingu Player w górę, a potem otwórz ją jeszcze raz.")
+                } icon: {
+                    Image(systemName: "arrow.clockwise.circle.fill")
+                }
+                .font(.system(size: 28, weight: .semibold))
+                .foregroundStyle(Color.accentColor)
+            } else {
+                Text("Zmiana języka zacznie obowiązywać po ponownym uruchomieniu aplikacji.")
+                    .font(.system(size: 26))
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+
     // MARK: - Sekcja: Tło
 
     /// Przybliżona szerokość karty koloru — tylko do skalowania podglądu
@@ -343,21 +439,27 @@ struct SettingsView: View {
 
     // MARK: - Pamięć podręczna
 
+    // Liczby z odmianą ("1 obraz / 2 obrazy / 5 obrazów", "1 image /
+    // 2 images") — formy dla każdego języka są w Localizable.xcstrings
+    // (plural variations), system wybiera właściwą wg liczby. Zastępuje
+    // dawną, ręczną funkcję polishPlural, która znała tylko polski.
+
     private var ramUsageText: String {
-        let count = ramUsage.count
         let bytes = Int64(ramUsage.bytes).formatted(.byteCount(style: .memory))
         let limit = Int64(ImageCache.byteLimit).formatted(.byteCount(style: .memory))
-        return "\(count.formatted()) \(polishPlural(count, "obraz", "obrazy", "obrazów")) · \(bytes) z \(limit)"
+        let count = String(localized: "\(ramUsage.count) obrazów")
+        return String(localized: "\(count) · \(bytes) z \(limit)")
     }
 
     private var diskUsageText: String {
-        guard let diskUsage else { return "Liczenie…" }
+        guard let diskUsage else { return String(localized: "Liczenie…") }
         // .memory (jednostki binarne, 1 GB = 1024³ B) jak w wierszu RAM —
         // .file liczy dziesiętnie (1 GB = 1000³ B), przez co limit 30 GiB
         // wyświetlał się jako "32,21 GB".
         let bytes = diskUsage.bytes.formatted(.byteCount(style: .memory))
         let limit = DiskThumbnailCache.maxBytes.formatted(.byteCount(style: .memory))
-        return "\(diskUsage.files.formatted()) \(polishPlural(diskUsage.files, "plik", "pliki", "plików")) · \(bytes) z \(limit)"
+        let count = String(localized: "\(diskUsage.files) plików")
+        return String(localized: "\(count) · \(bytes) z \(limit)")
     }
 
     private func refreshCacheUsage() async {
@@ -373,16 +475,7 @@ struct SettingsView: View {
         isClearingCache = false
     }
 
-    /// Polska odmiana po liczebniku: 1 plik, 2–4 pliki (poza 12–14),
-    /// 5+ plików.
-    private func polishPlural(_ n: Int, _ one: String, _ few: String, _ many: String) -> String {
-        if n == 1 { return one }
-        let lastDigit = n % 10, lastTwo = n % 100
-        if (2...4).contains(lastDigit) && !(12...14).contains(lastTwo) { return few }
-        return many
-    }
-
-    private func infoRow(title: String, value: String) -> some View {
+    private func infoRow(title: LocalizedStringKey, value: String) -> some View {
         HStack(spacing: 40) {
             Text(title)
                 .foregroundStyle(.secondary)

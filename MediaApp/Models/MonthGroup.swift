@@ -83,11 +83,15 @@ nonisolated enum MediaGrouping {
             buckets[(comps.year ?? 0) * 100 + (comps.month ?? 0), default: []].append(item)
         }
 
+        // Język nazw miesięcy = język, w którym aplikacja faktycznie działa
+        // (wybrany w Ustawieniach → Język albo systemowy) — a nie na sztywno
+        // polski jak wcześniej.
+        let locale = Locale(identifier: Bundle.main.preferredLocalizations.first ?? "pl")
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "pl_PL")
+        formatter.locale = locale
         formatter.setLocalizedDateFormatFromTemplate("LLLL yyyy")
         let monthFormatter = DateFormatter()
-        monthFormatter.locale = Locale(identifier: "pl_PL")
+        monthFormatter.locale = locale
         monthFormatter.dateFormat = "LLLL"
 
         var groups = buckets.keys.sorted(by: >).map { key -> MonthGroup in
@@ -109,7 +113,8 @@ nonisolated enum MediaGrouping {
         }
 
         if !unknown.isEmpty {
-            groups.append(MonthGroup(id: "unknown", title: "Nieznana data", year: nil, monthName: "Nieznana data", items: unknown))
+            let unknownTitle = String(localized: "Nieznana data")
+            groups.append(MonthGroup(id: "unknown", title: unknownTitle, year: nil, monthName: unknownTitle, items: unknown))
         }
 
         return groups
