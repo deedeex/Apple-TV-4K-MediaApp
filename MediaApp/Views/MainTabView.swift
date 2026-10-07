@@ -13,6 +13,12 @@ struct MainTabView: View {
     // dopiero gdy użytkownik przełączy się na daną zakładkę albo do niej
     // wróci (patrz komentarz w MediaLibraryStore.swift).
     @StateObject private var mediaLibrary = MediaLibraryStore()
+    @Environment(\.scenePhase) private var scenePhase
+
+    /// Po jakim czasie od ostatniego skanu powrót do aplikacji (z ekranu
+    /// głównego Apple TV) skanuje NAS ponownie, w tle — patrz
+    /// MediaLibraryStore.refreshIfStale.
+    private static let rescanAfter: TimeInterval = 24 * 60 * 60
 
     var body: some View {
         // "Wszystko" jako PIERWSZA zakładka — TabView bez jawnego selection:
@@ -20,18 +26,22 @@ struct MainTabView: View {
         // to jednocześnie ustawia ją jako domyślnie ładowaną przy starcie.
         TabView {
             AllGalleryView()
+                .appBackground()
                 .tabItem {
                     Label("Wszystko", systemImage: "square.grid.2x2.fill")
                 }
             PhotoGalleryView()
+                .appBackground()
                 .tabItem {
                     Label("Zdjęcia", systemImage: "photo.on.rectangle.angled")
                 }
             VideoGalleryView()
+                .appBackground()
                 .tabItem {
                     Label("Wideo", systemImage: "play.tv.fill")
                 }
             SettingsView()
+                .appBackground()
                 .tabItem {
                     Label("Ustawienia", systemImage: "gearshape")
                 }
@@ -48,6 +58,11 @@ struct MainTabView: View {
         // naprawia.
         .fullScreenCover(isPresented: $session.isEditingSetup) {
             SetupView()
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active {
+                mediaLibrary.refreshIfStale(maxAge: Self.rescanAfter)
+            }
         }
         .onChange(of: session.configVersion) { _, _ in
             // Odpala się WYŁĄCZNIE po udanym zapisaniu nowej konfiguracji

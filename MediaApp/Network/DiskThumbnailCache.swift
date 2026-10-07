@@ -27,13 +27,14 @@ import CryptoKit
 actor DiskThumbnailCache {
     static let shared = DiskThumbnailCache()
 
-    private static let maxBytes: Int64 = 30 * 1024 * 1024 * 1024 // 30 GB
+    static let maxBytes: Int64 = 30 * 1024 * 1024 * 1024 // 30 GB
     /// Po przekroczeniu limitu czyścimy DO tego poziomu (nie dokładnie do
     /// maxBytes), żeby nie odpalać ewikcji przy niemal każdym kolejnym zapisie.
     private static let targetBytesAfterEviction = Int64(Double(maxBytes) * 0.9)
 
     private let directory: URL
     private var totalBytes: Int64 = 0
+    private var fileCount = 0
     private var isInitialized = false
 
     private init() {
@@ -73,9 +74,33 @@ actor DiskThumbnailCache {
         guard (try? data.write(to: path, options: .atomic)) != nil else { return }
 
         totalBytes += Int64(data.count) - previousSize
+        if previousSize == 0 { fileCount += 1 }
         if totalBytes > Self.maxBytes {
             evictLeastRecentlyUsed()
         }
+    }
+
+    // MARK: - Statystyki i czyszczenie (Ustawienia)
+
+    /// Rozmiar i liczba plików na dysku. Pierwsze wywołanie w sesji (jeśli
+    /// nic jeszcze nie zostało zapisane) przelicza cały katalog — działa na
+    /// executorze tego actora, czyli w tle, nie na głównym wątku.
+    func usage() async -> (bytes: Int64, files: Int) {
+        await ensureInitialized()
+        return (totalBytes, fileCount)
+    }
+
+    /// Usuwa wszystkie miniatury z dysku (przycisk "Wyczyść pamięć
+    /// podręczną"). Cały katalog naraz i odtworzenie pustego — szybciej niż
+    /// usuwanie dziesiątek tysięcy plików po kolei. Trwające równolegle
+    /// odczyty (nonisolated) dostaną po prostu nil i miniatura zostanie
+    /// wygenerowana od nowa z NAS-a.
+    func removeAll() async {
+        await ensureInitialized()
+        try? FileManager.default.removeItem(at: directory)
+        try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        totalBytes = 0
+        fileCount = 0
     }
 
     // MARK: - Inicjalizacja
@@ -93,6 +118,7 @@ actor DiskThumbnailCache {
         totalBytes = entries.reduce(into: Int64(0)) { sum, url in
             sum += fileSize(at: url)
         }
+        fileCount = entries.count
 
         if totalBytes > Self.maxBytes {
             evictLeastRecentlyUsed()
@@ -115,6 +141,7 @@ actor DiskThumbnailCache {
             let size = fileSize(at: fileURL)
             if (try? FileManager.default.removeItem(at: fileURL)) != nil {
                 totalBytes -= size
+                fileCount -= 1
             }
         }
     }

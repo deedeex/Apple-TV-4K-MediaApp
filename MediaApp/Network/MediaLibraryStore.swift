@@ -57,10 +57,26 @@ final class MediaLibraryStore: ObservableObject {
     /// tego samego powodu co photoMonthGroups/videoMonthGroups wyżej (patrz
     /// komentarz tam).
     @Published private(set) var allMonthGroups: [MonthGroup] = []
+    /// true TYLKO, gdy nie ma jeszcze czego pokazać (pierwszy start bez
+    /// zapamiętanej listy) — galerie pokazują wtedy pełnoekranowy spinner.
+    /// Skan przy już wyświetlonej bibliotece NIE ustawia tego (patrz
+    /// isScanning) — inaczej siatka znikałaby na czas skanu.
     @Published private(set) var isLoading = true
+    /// Trwa sam skan NAS (listing + porównanie z obecną listą), w tym w tle
+    /// przy widocznej siatce — spinner na przycisku "Odśwież bibliotekę".
+    @Published private(set) var isScanning = false
     @Published private(set) var errorMessage: String?
 
     private var didStart = false
+    /// Trwa load() (wczytanie cache'a, skan, zapis) — blokada przed
+    /// równoległymi wywołaniami.
+    private var isLoadInProgress = false
+    /// Moment ostatniego UDANEGO skanu — patrz refreshIfStale().
+    private var lastScanDate: Date?
+    /// Trwające pre-generowanie miniatur nowych plików — patrz
+    /// pregenerateThumbnails(for:).
+    private var pregenerationTask: Task<Void, Never>?
+    private static let pregenerationLimit = 200
 
     /// Uruchamia skanowanie tylko raz — kolejne wywołania (np. ponowne
     /// pojawienie się MainTabView) nie odpalają go od nowa. Do wymuszenia
@@ -75,7 +91,26 @@ final class MediaLibraryStore: ObservableObject {
         Task { await load() }
     }
 
+    /// Skan w tle przy powrocie aplikacji na pierwszy plan (MainTabView,
+    /// scenePhase == .active), jeśli ostatni udany skan jest starszy niż
+    /// `maxAge`. tvOS przy wyjściu na ekran główny nie zamyka aplikacji,
+    /// tylko ją zawiesza — po powrocie proces jest wznawiany, a nie
+    /// uruchamiany od nowa, więc start() się nie powtarza i bez tego nowe
+    /// pliki z NAS nie pojawiłyby się nawet po kilku dniach. Próg chroni
+    /// przed skanowaniem przy każdym krótkim wyjściu z aplikacji.
+    func refreshIfStale(maxAge: TimeInterval) {
+        guard didStart, !isLoadInProgress else { return }
+        if let lastScanDate, Date().timeIntervalSince(lastScanDate) < maxAge { return }
+        reload()
+    }
+
     private func load() async {
+        // Blokada przed równoległymi wywołaniami (np. przycisk + powrót z
+        // tła). Osobna od isScanning, bo obejmuje też wczytanie cache'a i
+        // zapis — a isScanning (spinner na przycisku) tylko sam skan NAS.
+        guard !isLoadInProgress else { return }
+        isLoadInProgress = true
+        defer { isLoadInProgress = false }
         errorMessage = nil
 
         // Najpierw pokaż natychmiast to, co wiedzieliśmy przy ostatnim
@@ -84,24 +119,82 @@ final class MediaLibraryStore: ObservableObject {
         // Tylko gdy naprawdę nic jeszcze nie mamy (pierwsze uruchomienie
         // aplikacji albo wcześniej nieudany reload) — inaczej reload()
         // nadpisywałby już wyświetlone, żywe dane przestarzałym cache'em.
-        var hasCachedData = false
         if photos.isEmpty, videos.isEmpty, let cached = await MediaLibraryCache.load() {
             await apply(photos: cached.photos, videos: cached.videos)
-            hasCachedData = true
         }
-        isLoading = !hasCachedData
+        let hasDataOnScreen = !photos.isEmpty || !videos.isEmpty
+        isLoading = !hasDataOnScreen
+        // Stan PRZED skanem (z cache'a albo z poprzedniego skanu) — do
+        // wykrycia, które pozycje są nowe.
+        let knownIDs = Set((photos + videos).map(\.id))
 
+        isScanning = true
+        defer { isScanning = false }
         do {
             let library = try await SMBManager.shared.fetchMediaLibrary()
-            await apply(photos: library.photos, videos: library.videos)
+            let changed = await apply(photos: library.photos, videos: library.videos)
+            isScanning = false
+            // Przy pustym stanie wyjściowym (pierwsze uruchomienie bez
+            // zapamiętanej listy) "nowe" byłoby wszystko — pomijamy, pierwszy
+            // ekran siatki i tak wygeneruje najnowsze miniatury sam.
+            if !knownIDs.isEmpty {
+                let newItems = (library.photos + library.videos).filter { !knownIDs.contains($0.id) }
+                pregenerateThumbnails(for: newItems)
+            }
+            lastScanDate = Date()
             isLoading = false
-            await MediaLibraryCache.save(library)
+            // Zapis ~11 MB JSON-a tylko przy faktycznej zmianie — przy
+            // typowym starcie (nic nowego na NAS) zapisany plik i tak jest
+            // identyczny.
+            if changed {
+                await MediaLibraryCache.save(library)
+            }
         } catch {
             isLoading = false
-            // Mamy już coś z cache'a widoczne na ekranie? Nie zasłaniaj
-            // tego komunikatem o błędzie — po prostu zostaje nieodświeżone.
-            if !hasCachedData {
+            // Mamy już coś widoczne na ekranie (z cache'a albo z wcześniejszego
+            // skanu)? Nie zasłaniaj tego komunikatem o błędzie — po prostu
+            // zostaje nieodświeżone.
+            if !hasDataOnScreen {
                 errorMessage = error.localizedDescription
+            }
+        }
+    }
+
+    /// Generuje w tle miniatury kafelków dla plików, które pojawiły się na
+    /// NAS od poprzedniego skanu (np. kilkadziesiąt zdjęć z iPhone'a z
+    /// ostatniej doby), żeby po otwarciu aplikacji pokazały się od razu, a
+    /// nie kafelek po kafelku. Bez tego miniatury powstają dopiero, gdy
+    /// kafelek pojawi się na ekranie (leniwie).
+    ///
+    /// - Najwyżej `pregenerationLimit` NAJNOWSZYCH pozycji — przy wrzuceniu
+    ///   na NAS całego archiwum nie pobieramy tysięcy oryginałów na zapas.
+    /// - Ściśle PO KOLEI (await na każdą miniaturę): cały ruch SMB idzie
+    ///   przez jedną kolejkę FIFO (SMBIOGate), więc gdyby wrzucić 200 żądań
+    ///   naraz, kafelki faktycznie widoczne na ekranie czekałyby za nimi
+    ///   wszystkimi. Po kolei = widoczny kafelek czeka najwyżej na jedno
+    ///   pobranie.
+    /// - Miniatury, które już są w cache'u (L1/L2), kończą się od razu bez
+    ///   ruchu sieciowego — SMBImageCache/VideoThumbnailGenerator same to
+    ///   sprawdzają.
+    private func pregenerateThumbnails(for newItems: [NASMediaItem]) {
+        guard !newItems.isEmpty else { return }
+        let newest = newItems
+            .sorted { ($0.captureDate ?? .distantPast) > ($1.captureDate ?? .distantPast) }
+            .prefix(Self.pregenerationLimit)
+
+        pregenerationTask?.cancel()
+        pregenerationTask = Task.detached(priority: .utility) {
+            for item in newest {
+                guard !Task.isCancelled else { return }
+                switch item.type {
+                case .photo, .livePhoto:
+                    _ = try? await SMBImageCache.shared.thumbnail(
+                        for: item.imageURL,
+                        maxPixelSize: MediaGridTile.thumbnailMaxPixelSize
+                    )
+                case .video:
+                    _ = try? await VideoThumbnailGenerator.shared.thumbnail(for: item.imageURL)
+                }
             }
         }
     }
@@ -118,8 +211,11 @@ final class MediaLibraryStore: ObservableObject {
     ///   działo się w didSet photos/videos na głównym wątku, cztery razy
     ///   (zdjęcia, wideo i dwa razy "wszystko"), co zamrażało UI na ~5 s
     ///   zaraz po wczytaniu listy z NAS.
-    private func apply(photos newPhotos: [NASMediaItem], videos newVideos: [NASMediaItem]) async {
-        guard newPhotos != photos || newVideos != videos else { return }
+    ///
+    /// Zwraca, czy biblioteka faktycznie się zmieniła.
+    @discardableResult
+    private func apply(photos newPhotos: [NASMediaItem], videos newVideos: [NASMediaItem]) async -> Bool {
+        guard newPhotos != photos || newVideos != videos else { return false }
 
         let groups = await Task.detached(priority: .userInitiated) {
             let photoGroups = MediaGrouping.byMonth(newPhotos)
@@ -136,5 +232,6 @@ final class MediaLibraryStore: ObservableObject {
         photoMonthGroups = groups.photos
         videoMonthGroups = groups.videos
         allMonthGroups = groups.all
+        return true
     }
 }

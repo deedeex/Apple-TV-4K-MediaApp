@@ -29,6 +29,11 @@
 import SwiftUI
 
 struct MediaGridTile: View {
+    /// Rozmiar miniatury kafelka — współdzielony z pre-generowaniem
+    /// miniatur nowych plików (MediaLibraryStore), żeby trafiało w ten sam
+    /// wariant cache'u, którego potem szuka kafelek.
+    static let thumbnailMaxPixelSize: CGFloat = 420
+
     let item: NASMediaItem
     let action: () -> Void
 
@@ -43,7 +48,7 @@ struct MediaGridTile: View {
                 // nadmiar dłuższego boku — .clipShape niżej i tak przycina do
                 // zaokrąglonego kwadratu, więc same krawędzie i tak nigdy nie
                 // były w pełni widoczne.
-                AsyncImageSMB(url: item.imageURL, maxPixelSize: 420, contentMode: .fill)
+                AsyncImageSMB(url: item.imageURL, maxPixelSize: Self.thumbnailMaxPixelSize, contentMode: .fill)
                     .aspectRatio(1, contentMode: .fill)
                     .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
 

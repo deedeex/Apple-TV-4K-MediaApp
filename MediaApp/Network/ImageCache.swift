@@ -32,15 +32,35 @@
 //
 
 import UIKit
+import os
 
 final class ImageCache: @unchecked Sendable {
     static let shared = ImageCache()
 
+    static let countLimit = 500
+    static let byteLimit = 1024 * 1024 * 1024 // ~1 GB zdekodowanych bajtów
+
     private let cache = NSCache<NSString, UIImage>()
+    private let tracker = UsageTracker()
 
     private init() {
-        cache.countLimit = 500
-        cache.totalCostLimit = 1024 * 1024 * 1024 // ~1 GB zdekodowanych bajtów
+        cache.countLimit = Self.countLimit
+        cache.totalCostLimit = Self.byteLimit
+        cache.delegate = tracker
+    }
+
+    /// Ile obrazów i bajtów jest TERAZ w cache'u — do wyświetlenia w
+    /// Ustawieniach. NSCache sam tego nie udostępnia (zna tylko limity),
+    /// więc liczy to UsageTracker niżej.
+    var usage: (count: Int, bytes: Int) {
+        tracker.usage
+    }
+
+    /// Opróżnia cały cache RAM (przycisk "Wyczyść pamięć podręczną" w
+    /// Ustawieniach). Obrazy już wyświetlone na ekranie zostają — żyją w
+    /// @State widoków, nie tutaj.
+    func removeAll() {
+        cache.removeAllObjects()
     }
 
     func image(for url: URL, variant: String = "default") -> UIImage? {
@@ -48,7 +68,13 @@ final class ImageCache: @unchecked Sendable {
     }
 
     func insert(_ image: UIImage, for url: URL, variant: String = "default") {
-        cache.setObject(image, forKey: key(for: url, variant: variant), cost: byteCost(of: image))
+        let key = key(for: url, variant: variant)
+        let cost = byteCost(of: image)
+        // Rejestracja PRZED setObject i poza jego wywołaniem — NSCache woła
+        // delegata (eviction) synchronicznie z wnętrza setObject, a lock w
+        // UsageTracker nie jest reentrant.
+        tracker.didInsert(image, key: key, cost: cost)
+        cache.setObject(image, forKey: key, cost: cost)
     }
 
     /// Jawne usunięcie pojedynczego wpisu — używane przez MediaPagerView do
@@ -72,5 +98,59 @@ final class ImageCache: @unchecked Sendable {
 
     private func key(for url: URL, variant: String) -> NSString {
         "\(url.absoluteString)#\(variant)" as NSString
+    }
+}
+
+/// Licznik zawartości ImageCache. Delegat NSCache dostaje powiadomienie o
+/// KAŻDYM usunięciu obiektu — przez limit, presję pamięci systemu,
+/// remove(for:) i removeAll() — więc zliczanie "dodane minus usunięte" daje
+/// dokładny stan. Lock, bo ImageCache jest używany równolegle z wielu
+/// wątków (kafelki ładujące się jednocześnie).
+private final class UsageTracker: NSObject, NSCacheDelegate, @unchecked Sendable {
+    private struct Entry {
+        let key: NSString
+        let cost: Int
+    }
+
+    private struct State {
+        var entries: [ObjectIdentifier: Entry] = [:]
+        var idByKey: [NSString: ObjectIdentifier] = [:]
+        var bytes = 0
+    }
+
+    private let state = OSAllocatedUnfairLock(initialState: State())
+
+    var usage: (count: Int, bytes: Int) {
+        state.withLock { ($0.entries.count, $0.bytes) }
+    }
+
+    func didInsert(_ image: UIImage, key: NSString, cost: Int) {
+        let id = ObjectIdentifier(image)
+        state.withLock { state in
+            // Ten sam klucz z nowym obrazem — stary wpis i tak zniknie z
+            // NSCache, niezależnie od tego, czy delegat dostanie za niego
+            // powiadomienie.
+            if let oldID = state.idByKey[key], oldID != id, let old = state.entries.removeValue(forKey: oldID) {
+                state.bytes -= old.cost
+            }
+            if let existing = state.entries[id] {
+                state.bytes -= existing.cost
+            }
+            state.entries[id] = Entry(key: key, cost: cost)
+            state.idByKey[key] = id
+            state.bytes += cost
+        }
+    }
+
+    func cache(_ cache: NSCache<AnyObject, AnyObject>, willEvictObject obj: Any) {
+        guard let image = obj as? UIImage else { return }
+        let id = ObjectIdentifier(image)
+        state.withLock { state in
+            guard let entry = state.entries.removeValue(forKey: id) else { return }
+            state.bytes -= entry.cost
+            if state.idByKey[entry.key] == id {
+                state.idByKey[entry.key] = nil
+            }
+        }
     }
 }

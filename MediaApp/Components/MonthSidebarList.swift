@@ -14,8 +14,9 @@
 //    wycofana (renderował się jako mniejszy, "pływający" prostokąt).
 //  - BEZ systemowego efektu fokusu (.buttonStyle(.plain)/.card na tvOS
 //    powiększają i "unoszą" wiersz z animacją przy każdym ruchu pilota
-//    góra/dół) — zamiast tego własny SidebarRowButtonStyle: fokus to tylko
-//    płaskie tło, bez skalowania i bez animacji.
+//    góra/dół) — zamiast tego własny SidebarRowButtonStyle (osobny plik,
+//    współdzielony z bocznym menu Ustawień): fokus to tylko płaskie tło,
+//    bez skalowania i bez animacji.
 //  - Wybrany miesiąc oznaczony WYŁĄCZNIE ptaszkiem i kolorem tekstu, bez
 //    stałego tła — inaczej przy przewijaniu listy widać naraz dwa
 //    podświetlenia (wybrany + z fokusem), co myli.
@@ -111,30 +112,5 @@ struct MonthSidebarList: View {
             .padding(.horizontal, 20)
         }
         .buttonStyle(SidebarRowButtonStyle())
-    }
-}
-
-/// Płaski styl wiersza bocznej listy — patrz nagłówek pliku. Własny
-/// ButtonStyle wyłącza na tvOS systemowy efekt fokusu (skalowanie/uniesienie
-/// z animacją); fokus sygnalizuje tylko tło, zmieniane bez animacji.
-private struct SidebarRowButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        SidebarRow(configuration: configuration)
-    }
-
-    private struct SidebarRow: View {
-        let configuration: ButtonStyleConfiguration
-        @Environment(\.isFocused) private var isFocused
-
-        var body: some View {
-            configuration.label
-                .background(
-                    RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .fill(Color.white.opacity(isFocused ? 0.2 : 0))
-                )
-                .opacity(configuration.isPressed ? 0.7 : 1)
-                .animation(nil, value: isFocused)
-                .animation(nil, value: configuration.isPressed)
-        }
     }
 }
