@@ -1,0 +1,25 @@
+# Pliki, których Git ma nie śledzić — wspólne dla każdego, kto sklonuje
+# repozytorium (w przeciwieństwie do .git/info/exclude, który działa tylko
+# lokalnie).
+
+# macOS — ustawienia widoku folderów Findera
+.DS_Store
+
+# Xcode — osobiste ustawienia użytkownika (otwarte pliki, stan schematów,
+# breakpointy). Każdy ma własne; współdzielone są tylko xcshareddata.
+xcuserdata/
+*.xcuserstate
+
+# Xcode — wyniki kompilacji, jeśli trafią do folderu projektu (domyślnie
+# są w ~/Library/Developer/Xcode/DerivedData) i archiwa wydań
+DerivedData/
+build/
+*.xcarchive
+
+# Swift Package Manager — pobrane źródła zależności (Xcode pobierze je sam
+# na podstawie Package.resolved, który JEST śledzony)
+.build/
+.swiftpm/
+
+# Lokalne ustawienia Claude Code dla tego projektu
+.claude/
